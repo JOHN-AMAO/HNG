@@ -6,7 +6,8 @@ const ipinfoWrapper = new IPinfoWrapper("95b0bc89ff9156");
 
 export async function GET(req: any) {
   // Get the client's IP address
-  const ip = (await requestIp.getClientIp(req)) || "";
+  // const ip = (await requestIp.getClientIp(req)) || "";
+  const ip = (req.headers.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
 
   // Look up the IP information
   const response: IPinfo = await ipinfoWrapper.lookupIp(ip);
