@@ -15,11 +15,21 @@ datasource db {
 }
 
 model User {
-    id           String       @id @default(uuid())
-    userId       String       @unique
+    userId           String       @id @default(uuid())
     firstName    String
     lastName     String
     email        String       @unique
     password     String
     phone        String
+
+    organisations Organisation[]  @relation("UserOrganisation")
+}
+
+
+model Organisation {
+   Orgid           String       @id @default(uuid())
+   name            String
+   description      String?
+
+   users User[]                  @relation("UserOrganisation")
 }
