@@ -1,6 +1,10 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+const SECRET_KEY =
+  "D4359C0A55354F6321BA6F0880BAA71E8D65D16BEB9EB76FDA923058B931BD8A";
 
 export async function POST(request: Request) {
   try {
@@ -39,11 +43,20 @@ export async function POST(request: Request) {
         organisations: true,
       },
     });
+    const token = jwt.sign(
+      { userId: user.userId, email: user.email },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
 
     return NextResponse.json({
-      status: 201,
+      status: "success",
+      statusCode: 201,
       message: "Registration successful",
-      user,
+      data: {
+        accessToken: token,
+        user: user,
+      },
     });
   } catch (error) {
     console.error("Registration error:", error);
