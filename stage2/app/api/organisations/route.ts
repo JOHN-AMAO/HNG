@@ -51,3 +51,38 @@ export async function GET(request: ExtendedNextRequest) {
     });
   }
 }
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { name, description } = body;
+
+  try {
+    const data = await db.organisation.create({
+      data: {
+        name,
+        description,
+        users: {
+          create: [],
+        },
+      },
+      include: {
+        users: true,
+      },
+    });
+
+    return NextResponse.json({
+      status: "success",
+      message: "Organisation created successfully",
+      data,
+      statusCode: 201,
+    });
+  } catch (error) {
+    console.error("Error creating organisation:", error);
+
+    return NextResponse.json({
+      status: "Bad request",
+      message: "Error creating organisation",
+      statusCode: 400,
+    });
+  }
+}
